@@ -67,11 +67,12 @@ class _MyHomePageState extends State<MyHomePage> {
     final updatedRes = await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return EditVideoComponent(videoLink: videoLink);
     }));
-    if(updatedRes != null && updatedRes is FinishedVideoData){
+    if(updatedRes != null && updatedRes is FinishedVideoData){//verify output
       int index = links.indexOf(videoLink);
       controllers[index].dispose();
       components[index] = Container();
       links[index] = '';
+
       VideoPlayerController getController = VideoPlayerController.file(File(updatedRes.url));
       await getController.initialize();
       setState(() {
@@ -102,6 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () => pickVideo(),
               child: Text('Pick Video')
             ),
+            
             for(int i = 0; i < links.length; i++)
             Stack(
               children: [
