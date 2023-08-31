@@ -67,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final updatedRes = await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return EditVideoComponent(videoLink: videoLink);
     }));
-    if(updatedRes != null && updatedRes is FinishedVideoData){//verify output
+    if(updatedRes != null && updatedRes is FinishedVideoData){
       int index = links.indexOf(videoLink);
       controllers[index].dispose();
       components[index] = Container();
