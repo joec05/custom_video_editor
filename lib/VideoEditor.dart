@@ -586,12 +586,6 @@ class VideoEditorState extends State<EditVideoComponentState> {
     );
   }
 
-  Future<String> _createFolderInAppDocDir() async {
-    Directory directory = await getApplicationDocumentsDirectory();
-    final Directory directoryPathFolder = Directory('${directory.path}/output/');
-    return '${directoryPathFolder.path}/${Uuid().v4()}.mp4';
-  }
-
   Duration millisecondsToDuration(double milliseconds) {
     int microseconds = (milliseconds * 1000).toInt();
     int hours = microseconds ~/ Duration.microsecondsPerHour;
@@ -638,10 +632,10 @@ class VideoEditorState extends State<EditVideoComponentState> {
           );
         }
       );
-      String inputFilePath = await copyVideoToTempDirectory();
+      String inputFilePath = await copyVideoInput();
       String startTime = millisecondsToDuration(startTrimmedDuration.value).toString();
       String endTime =  millisecondsToDuration(endTrimmedDuration.value).toString();
-      String outputFilePath = await _createFolderInAppDocDir();
+      String outputFilePath = await createOutputFile();
       String currentMessage = '';
       FFmpegKit.executeAsync('-y -i "$inputFilePath" -ss $startTime -to $endTime -filter:v "crop=${draggedWidthCrop.value / sizeScale}:${draggedHeightCrop.value / sizeScale}:${draggedLeftCrop.value / sizeScale}:${draggedTopCrop.value / sizeScale}" "$outputFilePath"', (session) async {
         FFmpegKitConfig.enableLogCallback((log) async{
@@ -704,12 +698,20 @@ class VideoEditorState extends State<EditVideoComponentState> {
     });
   }
 
-  Future<String> copyVideoToTempDirectory() async {
-    Directory directory = await getTemporaryDirectory();
-    final Directory directoryPathFolder = Directory('${directory.path}/${Uuid().v4()}.mp4');
+  Future<String> copyVideoInput() async {
+    Directory temporaryDirectory = await getTemporaryDirectory();
+    Directory directory = await Directory('${temporaryDirectory.path}/video/input').create(recursive: true);
     File originalFile = File(widget.videoLink);
-    File newFile = await originalFile.copy(directoryPathFolder.path);
+    String filePath = '${directory.path}/${Uuid().v4()}.mp4';
+    File newFile = await originalFile.copy(filePath);
     return newFile.path;
+  }
+
+  Future<String> createOutputFile() async {
+    Directory temporaryDirectory = await getTemporaryDirectory();
+    Directory directory = await Directory('${temporaryDirectory.path}/video/output').create(recursive: true);
+    String filePath = '${directory.path}/${Uuid().v4()}.mp4';
+    return filePath;
   }
 
   void dispose(){
