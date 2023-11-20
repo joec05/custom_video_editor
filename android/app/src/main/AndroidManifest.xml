@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.custom_video_editor">
    <application
-        android:label="custom_video_editor"
+        android:label="Custom Video Editor"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

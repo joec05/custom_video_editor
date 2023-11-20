@@ -26,8 +26,8 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 33
-    ndkVersion flutter.ndkVersion
+    compileSdkVersion 34
+    ndkVersion "25.2.9519653"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -47,8 +47,8 @@ android {
         applicationId "com.example.custom_video_editor"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
-        minSdkVersion 24
-        targetSdkVersion flutter.targetSdkVersion
+        minSdkVersion 23
+        targetSdkVersion 24
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }

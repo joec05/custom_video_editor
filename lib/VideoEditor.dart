@@ -687,7 +687,7 @@ class VideoEditorState extends State<EditVideoComponentState> {
         });
       }, (Log log) {},
       (Statistics statistics) {
-        int timeInMilliseconds = statistics.getTime();
+        int timeInMilliseconds = statistics.getTime().toInt();
         if (timeInMilliseconds > 0) {
           progressPercentage.value = ((
             (timeInMilliseconds/1000).round() * 1000) / 
