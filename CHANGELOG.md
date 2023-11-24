@@ -9,3 +9,8 @@ Fix directory bug
 ## 1.0.2
 
 Allow usage for devices below Android 7
+
+
+## 1.0.3
+
+Fix overflow error

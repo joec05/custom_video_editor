@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
@@ -113,6 +115,36 @@ class VideoEditorState extends State<EditVideoComponentState> {
     totalSliderWidth.value = totalTrimmerSize;
   }
 
+  @override void dispose(){
+    super.dispose();
+    playerController.value.dispose();
+    thumbnails.dispose();
+    playerController.dispose();
+    draggedLeftTrim.dispose();
+    draggedWidthTrim.dispose();
+    startTrimmedDuration.dispose();
+    endTrimmedDuration.dispose();
+    draggedWidthCrop.dispose();
+    draggedTopCrop.dispose();
+    draggedLeftCrop.dispose();
+    draggedHeightCrop.dispose();
+    videoWidth.dispose();
+    videoHeight.dispose();
+    currentWidthCrop.dispose();
+    currentLeftCrop.dispose();
+    currentHeightCrop.dispose();
+    currentTopCrop.dispose();
+    currentEditType.dispose();
+    videoIsPlaying.dispose();
+    currentPosition.dispose();
+    trimDraggedLeft.dispose();
+    trimDraggedRight.dispose();
+    trimLeftDraggedLeft.dispose();
+    trimRightDraggedLeft.dispose();
+    progressPercentage.dispose();
+    totalSliderWidth.dispose();
+  }
+
   Future<void> loadThumbnails() async {
     try {
       final int thumbnailCount = (getScreenWidth() / 50).floor();
@@ -131,7 +163,7 @@ class VideoEditorState extends State<EditVideoComponentState> {
       }
       thumbnails.value = generateThumbnails;
     } catch (e) {
-      print('Error generating thumbnails: $e');
+      debugPrint('Error generating thumbnails: $e');
     }
   }
 
@@ -143,10 +175,19 @@ class VideoEditorState extends State<EditVideoComponentState> {
     double scaleHeight = targetHeight / height;
 
     double scale = scaleWidth < scaleHeight ? scaleWidth : scaleHeight;
+
     sizeScale = scale;
 
     double resizedWidth = width * scale;
     double resizedHeight = height * scale;
+
+    if(resizedHeight > 0.8 * getScreenHeight() - appBarHeight){
+      resizedHeight = 0.8 * getScreenHeight() - appBarHeight;
+    }
+
+    if(resizedWidth < getScreenWidth()){
+      resizedWidth = getScreenWidth();
+    }
 
     return Size(resizedWidth, resizedHeight);
   }
@@ -273,7 +314,7 @@ class VideoEditorState extends State<EditVideoComponentState> {
               children: [
                 Positioned(
                   child: croppedVideoComponent(
-                    Container(
+                    SizedBox(
                       width: videoWidth.value,
                       height: videoHeight.value,
                       child: VideoPlayer(playerController.value),
@@ -376,7 +417,7 @@ class VideoEditorState extends State<EditVideoComponentState> {
               child: Container(
                 width: cropBallSize,
                 height: cropBallSize,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.redAccent,
                   shape: BoxShape.circle
                 ),
@@ -396,7 +437,7 @@ class VideoEditorState extends State<EditVideoComponentState> {
               child: Container(
                 width: cropBallSize,
                 height: cropBallSize,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.redAccent,
                   shape: BoxShape.circle
                 ),
@@ -416,7 +457,7 @@ class VideoEditorState extends State<EditVideoComponentState> {
               child: Container(
                 width: cropBallSize,
                 height: cropBallSize,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.redAccent,
                   shape: BoxShape.circle
                 ),
@@ -436,7 +477,7 @@ class VideoEditorState extends State<EditVideoComponentState> {
               child: Container(
                 width: cropBallSize,
                 height: cropBallSize,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.redAccent,
                   shape: BoxShape.circle
                 ),
@@ -445,7 +486,7 @@ class VideoEditorState extends State<EditVideoComponentState> {
           ),
           Positioned(
             child: croppedVideoComponent(
-              Container(
+              SizedBox(
                 width: videoWidth.value,
                 height: videoHeight.value,
               )
@@ -458,7 +499,7 @@ class VideoEditorState extends State<EditVideoComponentState> {
 
   Widget trimComponent(){
     return Center(
-      child: Container(
+      child: SizedBox(
         height: trimmerHeight,
         child: Row(
           children: [
@@ -516,7 +557,6 @@ class VideoEditorState extends State<EditVideoComponentState> {
                           trimDraggedLeft.value = min(max(draggedLeftTrim.value + (getScreenWidth() - totalTrimmerSize) / 2 - draggableSliderWidth / 2 , (getScreenWidth() - totalTrimmerSize) / 2 - draggableSliderWidth / 2), totalTrimmerSize + (getScreenWidth() - totalTrimmerSize) / 2 - draggableSliderWidth / 2);
                           trimDraggedRight.value = min(max((getScreenWidth() - totalTrimmerSize) / 2 + totalTrimmerSize - draggedLeftTrim.value - draggedWidthTrim.value , (getScreenWidth() - totalTrimmerSize) / 2 - draggableSliderWidth / 2), totalTrimmerSize + (getScreenWidth() - totalTrimmerSize) / 2 - draggableSliderWidth / 2);
                           trimLeftDraggedLeft.value = draggedLeftTrim.value + (getScreenWidth() - totalTrimmerSize) / 2 - draggableSliderWidth / 2 ;
-                          print('$startTrimmedDuration is start durationyy');
                         }
                       },
                       onPanEnd: (details){
@@ -526,7 +566,7 @@ class VideoEditorState extends State<EditVideoComponentState> {
                       child: Container(
                         width: trimBallSize,
                         height: trimBallSize,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.redAccent,
                           shape: BoxShape.circle
                         ),
@@ -545,7 +585,6 @@ class VideoEditorState extends State<EditVideoComponentState> {
                           trimDraggedLeft.value = min(max(draggedLeftTrim.value + (getScreenWidth() - totalTrimmerSize) / 2 - draggableSliderWidth / 2 , (getScreenWidth() - totalTrimmerSize) / 2 - draggableSliderWidth / 2), totalTrimmerSize + (getScreenWidth() - totalTrimmerSize) / 2 - draggableSliderWidth / 2);
                           trimDraggedRight.value = min(max((getScreenWidth() - totalTrimmerSize) / 2 + totalTrimmerSize - draggedLeftTrim.value - draggedWidthTrim.value , (getScreenWidth() - totalTrimmerSize) / 2 - draggableSliderWidth / 2), totalTrimmerSize + (getScreenWidth() - totalTrimmerSize) / 2 - draggableSliderWidth / 2);
                           trimRightDraggedLeft.value = min(draggedLeftTrim.value +draggedWidthTrim.value+ (getScreenWidth() - totalTrimmerSize) / 2 - draggableSliderWidth / 2 + draggableSliderWidth, totalTrimmerSize + (getScreenWidth() - totalTrimmerSize) / 2 + draggableSliderWidth / 2) ;
-                          print('$endTrimmedDuration is end');
                         }
                       },
                       onPanEnd: (details){
@@ -555,7 +594,7 @@ class VideoEditorState extends State<EditVideoComponentState> {
                       child: Container(
                         width: trimBallSize,
                         height: trimBallSize,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.redAccent,
                           shape: BoxShape.circle
                         ),
@@ -614,18 +653,16 @@ class VideoEditorState extends State<EditVideoComponentState> {
             valueListenable: progressPercentage,
             builder: (context, int percentage, child) {
               return AlertDialog(
-                title: Text('Please wait...'),
-                content: Container(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CircularProgressIndicator(),
-                      SizedBox(
-                        height: getScreenHeight() * 0.025,
-                      ),
-                      Text('$percentage%')
-                    ]
-                  )
+                title: const Text('Please wait...'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const CircularProgressIndicator(),
+                    SizedBox(
+                      height: getScreenHeight() * 0.025,
+                    ),
+                    Text('$percentage%')
+                  ]
                 )
               );
                 }
@@ -636,11 +673,11 @@ class VideoEditorState extends State<EditVideoComponentState> {
       String startTime = millisecondsToDuration(startTrimmedDuration.value).toString();
       String endTime =  millisecondsToDuration(endTrimmedDuration.value).toString();
       String outputFilePath = await createOutputFile();
-      String currentMessage = '';
+      String currentMessage = '${draggedWidthCrop.value} ${videoWidth.value} ${draggedHeightCrop.value} ${videoHeight.value}';
       FFmpegKit.executeAsync('-y -i "$inputFilePath" -ss $startTime -to $endTime -filter:v "crop=${draggedWidthCrop.value / sizeScale}:${draggedHeightCrop.value / sizeScale}:${draggedLeftCrop.value / sizeScale}:${draggedTopCrop.value / sizeScale}" "$outputFilePath"', (session) async {
         FFmpegKitConfig.enableLogCallback((log) async{
           final message = log.getMessage();
-          currentMessage = '';
+          currentMessage = message;
           debugPrint(message);
         });
 
@@ -657,10 +694,10 @@ class VideoEditorState extends State<EditVideoComponentState> {
             context: context,
             builder: (_){
               return AlertDialog(
-                title: Text('Process has been cancelled'),
+                title: const Text('Process has been cancelled'),
                 content: ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text('Ok')
+                  child: const Text('Ok')
                 )
               );
             }
@@ -674,17 +711,12 @@ class VideoEditorState extends State<EditVideoComponentState> {
                 title: Text(currentMessage),
                 content: ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text('Ok')
+                  child: const Text('Ok')
                 )
               );
             }
           );
         }
-        
-        Timer.periodic(const Duration(milliseconds: 1000), (Timer timer) async{
-          timer.cancel();
-          progressPercentage.value = 0;
-        });
       }, (Log log) {},
       (Statistics statistics) {
         int timeInMilliseconds = statistics.getTime().toInt();
@@ -702,7 +734,7 @@ class VideoEditorState extends State<EditVideoComponentState> {
     Directory temporaryDirectory = await getTemporaryDirectory();
     Directory directory = await Directory('${temporaryDirectory.path}/video/input').create(recursive: true);
     File originalFile = File(widget.videoLink);
-    String filePath = '${directory.path}/${Uuid().v4()}.mp4';
+    String filePath = '${directory.path}/${const Uuid().v4()}.mp4';
     File newFile = await originalFile.copy(filePath);
     return newFile.path;
   }
@@ -710,13 +742,8 @@ class VideoEditorState extends State<EditVideoComponentState> {
   Future<String> createOutputFile() async {
     Directory temporaryDirectory = await getTemporaryDirectory();
     Directory directory = await Directory('${temporaryDirectory.path}/video/output').create(recursive: true);
-    String filePath = '${directory.path}/${Uuid().v4()}.mp4';
+    String filePath = '${directory.path}/${const Uuid().v4()}.mp4';
     return filePath;
-  }
-
-  void dispose(){
-    super.dispose();
-    playerController.value.dispose();
   }
   
   @override
@@ -727,8 +754,8 @@ class VideoEditorState extends State<EditVideoComponentState> {
       builder: (context, EditType editType, child) {
         return Scaffold(
           appBar: AppBar(
-            title: Row(
-              children: const [
+            title: const Row(
+              children: [
                 Text(
                   'Video Editor',
                   style: TextStyle(
@@ -740,39 +767,35 @@ class VideoEditorState extends State<EditVideoComponentState> {
             ),
             actions: [
               editType == EditType.crop ?
-                Container(
-                  child: ElevatedButton(
-                    onPressed: (){
-                      currentTopCrop.value = draggedTopCrop.value;
-                      currentLeftCrop.value = draggedLeftCrop.value;
-                      currentWidthCrop.value = draggedWidthCrop.value;
-                      currentHeightCrop.value = draggedHeightCrop.value;
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide.none,
-                        borderRadius: BorderRadius.circular(0),
-                      ),
-                    ),  
-                    child: Text('Crop')
-                  ),
-                )
-              : Container(),
-              Container(
-                child: ElevatedButton(
+                ElevatedButton(
                   onPressed: (){
-                    saveTrimmedVideo();
+                    currentTopCrop.value = draggedTopCrop.value;
+                    currentLeftCrop.value = draggedLeftCrop.value;
+                    currentWidthCrop.value = draggedWidthCrop.value;
+                    currentHeightCrop.value = draggedHeightCrop.value;
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
+                    backgroundColor: Colors.red,
                     shape: RoundedRectangleBorder(
                       side: BorderSide.none,
                       borderRadius: BorderRadius.circular(0),
                     ),
                   ),  
-                  child: Text('Done')
+                  child: const Text('Crop')
                 )
+              : Container(),
+              ElevatedButton(
+                onPressed: (){
+                  saveTrimmedVideo();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide.none,
+                    borderRadius: BorderRadius.circular(0),
+                  ),
+                ),  
+                child: const Text('Done')
               )
             ]
           ),
@@ -788,12 +811,12 @@ class VideoEditorState extends State<EditVideoComponentState> {
                       children: [
                         editType == EditType.none ?
                           Flexible(
-                            child: Container(
+                            child: SizedBox(
                               height: 0.8 * getScreenHeight() - appBarHeight,
                               child: Transform.translate(
                                 offset: applyCropComponentTranslateOffset(),
                                 child: croppedVideoComponent(
-                                  Container(
+                                  SizedBox(
                                     width: videoWidth,
                                     height: videoHeight,
                                     child: VideoPlayer(playerController.value),
@@ -804,12 +827,12 @@ class VideoEditorState extends State<EditVideoComponentState> {
                           )
                         : editType == EditType.trim ?
                           Flexible(
-                            child: Container(
+                            child: SizedBox(
                               height: 0.7 * getScreenHeight() - appBarHeight,
                               child: Transform.translate(
                                 offset: applyCropComponentTranslateOffset(),
                                 child: croppedVideoComponent(
-                                  Container(
+                                  SizedBox(
                                     width: videoWidth,
                                     height: videoHeight,
                                     child: VideoPlayer(playerController.value),
@@ -820,7 +843,7 @@ class VideoEditorState extends State<EditVideoComponentState> {
                           )
                         : editType == EditType.crop ?
                           Flexible(
-                            child: Container(
+                            child: SizedBox(
                               height: 0.8 * getScreenHeight() - appBarHeight,
                               child: Center(
                                 child: ValueListenableBuilder<double>(
@@ -877,7 +900,7 @@ class VideoEditorState extends State<EditVideoComponentState> {
                         Column(
                           children: [
                             editType == EditType.trim ?
-                              Container(
+                              SizedBox(
                                 height: 0.1 * getScreenHeight(),
                                 child: ValueListenableBuilder<List>(
                                   valueListenable: thumbnails,
@@ -935,7 +958,7 @@ class VideoEditorState extends State<EditVideoComponentState> {
                               padding: EdgeInsets.symmetric(horizontal: getScreenWidth() * 0.05),
                               height: 0.1 * getScreenHeight(),
                               width: double.infinity,
-                              decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: Color.fromARGB(255, 88, 64, 64)), top: BorderSide(width: 2, color: Color.fromARGB(255, 88, 64, 64)))),
+                              decoration: const BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: Color.fromARGB(255, 88, 64, 64)), top: BorderSide(width: 2, color: Color.fromARGB(255, 88, 64, 64)))),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -963,8 +986,8 @@ class VideoEditorState extends State<EditVideoComponentState> {
                                             }
                                           },
                                           child: isPlaying ?
-                                            Icon(Icons.pause, size: 30)
-                                          : Icon(Icons.play_arrow, size: 30)
+                                            const Icon(Icons.pause, size: 30)
+                                          : const Icon(Icons.play_arrow, size: 30)
                                         );
                                       }
                                     )
