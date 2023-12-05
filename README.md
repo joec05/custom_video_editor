@@ -8,7 +8,7 @@ Video editor designed for trimming and cropping videos.
 
 * Trim
 
-## Custom video editor in display  
+## Custom video editor in display
 
 ![](https://github.com/joec05/files/blob/6798858f4c5441ec8f5a0ee994b22240d493fd91/custom_video_editor/video_editor_preview.gif?raw=true)
 

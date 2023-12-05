@@ -648,10 +648,13 @@ class VideoEditorState extends State<EditVideoComponentState> {
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (_){
+        builder: (context2){
           return ValueListenableBuilder<int>(
             valueListenable: progressPercentage,
             builder: (context, int percentage, child) {
+              if(percentage >= 100){
+                Navigator.of(context2).pop();
+              }
               return AlertDialog(
                 title: const Text('Please wait...'),
                 content: Column(
@@ -683,7 +686,6 @@ class VideoEditorState extends State<EditVideoComponentState> {
 
         final returnCode = await session.getReturnCode();
         if (ReturnCode.isSuccess(returnCode)) {
-          Navigator.of(context).pop();
           Navigator.pop(context, FinishedVideoData(
             outputFilePath,
             Size(currentWidthCrop.value, currentHeightCrop.value)
